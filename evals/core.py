@@ -3,20 +3,18 @@ import json
 from string import Template
 import time
 
-from evals.inference.open_ai import open_ai_inference
+from evals.inference import open_ai_inference
 
 from evals import models
 
 
-def run_evals(message_contexts, constructors):
+def run_evals(message_contexts, constructors, foundation_models):
 
     run = models.Run.objects.create()
 
     assembled_constructors = dict()
     for k, v in constructors.items():
         assembled_constructors[k] = "\n".join([value.text for value in v])
-
-    foundation_models = models.FoundationModel.objects.all()
 
     for message_context in message_contexts:
         for foundation_model in foundation_models:
@@ -67,6 +65,12 @@ def generate_response(messages, constructor_values, foundation_model: models.Fou
         input_token_count = response.dict()['usage']['prompt_tokens']
         output_token_count = response.dict()['usage']['completion_tokens']
         return response.dict(), response.choices[0].message.content, formatted_prompt, input_token_count, output_token_count, latency
+
+    elif foundation_model.family == models.FoundationModelFamily.BEDROCK:
+        response, latency = bedrock_inference(constructed, messages, foundation_model.variant)
+        input_token_count = response['usage']['input_tokens']
+        output_token_count = response['usage']['output_tokens']
+        return response, response.get('content')[0]['text'], formatted_prompt, input_token_count, output_token_count, latency
 
     else:
         raise Exception("Invalid foundation model")

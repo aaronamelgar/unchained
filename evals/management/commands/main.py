@@ -13,14 +13,16 @@ class Command(BaseCommand):
     """
 
     def handle(self, *args, **options):
-        message_contexts = models.MessageContext.objects.all()
-        constructors = {
-            'instructions': models.Instruction.objects.all(),
-            'personalization': models.Personalization.objects.all(),
-            'examples': models.Example.objects.all(),
-            'research': models.Augmentation.objects.all(),
-        }
+        os.system("python manage.py makemigrations")
 
-        run_evals(message_contexts, constructors)
+        # message_contexts = models.MessageContext.objects.all()
+        # constructors = {
+        #     'instructions': models.Instruction.objects.all(),
+        #     'personalization': models.Personalization.objects.all(),
+        #     'examples': models.Example.objects.all(),
+        #     'augmentation': models.Augmentation.objects.all(),
+        # }
+        # foundation_models = models.FoundationModel.objects.all()
+        # run_evals(message_contexts, constructors, foundation_models)
 
 

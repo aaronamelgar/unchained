@@ -17,7 +17,7 @@ class GeneratedResultAdmin(admin.ModelAdmin):
         'output_tokens',
         'latency',
         'examples',
-        'research',
+        'augmentation',
         'personalization',
         'instructions',
         'completed_system_prompt',

@@ -15,7 +15,7 @@ class GenericCharFieldItemBase(CommonGenericTaggedItemBase):
     object_id = models.CharField(
         verbose_name=_("object ID"),
         db_index=True,
-        max_length=32,  # Replace with your length
+        max_length=64,  # Replace with your length
     )
 
 

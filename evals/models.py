@@ -11,10 +11,12 @@ from evals.registry import evaluation_registry
 
 class FoundationModelFamily(models.TextChoices):
     OPEN_AI = 'open-ai'
+    BEDROCK = 'bedrock'
 
 
 class FoundationModelVariant(models.TextChoices):
     GPT_4_TURBO_PREVIEW = 'gpt-4-turbo-preview'
+    CLAUDE_SONNET = 'anthropic.claude-3-sonnet-20240229-v1:0'
 
 
 class FoundationModel(models.Model):
@@ -51,7 +53,7 @@ class MessageContext(models.Model):
         }
     }
 
-    name = models.CharField(primary_key=True, null=False, unique=True)
+    name = models.CharField(primary_key=True, null=False, unique=True, default=uuid.uuid4)
     created_at = models.DateTimeField(auto_now_add=True)
     messages = JSONField(schema=MESSAGES_SCHEMA)
     reference_output = models.TextField(null=True, blank=True)
@@ -66,7 +68,7 @@ class MessageContext(models.Model):
 
 
 class PromptConstructor(models.Model):
-    name = models.CharField(primary_key=True, null=False, unique=True)
+    name = models.CharField(primary_key=True, null=False, unique=True, default=uuid.uuid4)
     created_at = models.DateTimeField(auto_now_add=True)
     text = models.TextField()
 
@@ -112,7 +114,7 @@ class GeneratedResult(models.Model):
     message_context = models.ForeignKey(MessageContext, on_delete=models.CASCADE, default=True)
     instructions = models.ManyToManyField(Instruction)
     examples = models.ManyToManyField(Example)
-    research = models.ManyToManyField(Augmentation)
+    augmentation = models.ManyToManyField(Augmentation)
     personalization = models.ManyToManyField(Personalization)
 
     completed_system_prompt = models.TextField(null=True)
